@@ -15,8 +15,16 @@ fmod RUBIK-OP is
 
 	ops W Y R O B G : -> Color [ctor] .
 
-	op initial : -> State [ctor] .
-	eq initial = s(left(O O O O O O O O O) front(G G G G G G G G G) right(R R R R R R R R R) back(B B B B B B B B B) up(W W W W W W W W W) down(Y Y Y Y Y Y Y Y Y)) .
+	op solvedState : -> State [ctor] .
+	eq solvedState = s(left(O O O O O O O O O) front(G G G G G G G G G) right(R R R R R R R R R) back(B B B B B B B B B) up(W W W W W W W W W) down(Y Y Y Y Y Y Y Y Y)) .
+
+	op scrambleState : -> State [ctor] .
+	eq scrambleState = s(left(G W G Y O O G G W) front(O Y B G Y W O O R) right(R R W R R R Y G Y) back(R B O Y W O B G R) up(W W B O G B Y B Y) down(B B G Y B W W R O)) .
+
+	var S : State .
+	op solved : State -> Bool .
+	eq solved(solvedState) = true .
+	eq solved(S) = false [owise] .
 
 	vars F1 F2 F3 F4 F5 F6 F7 F8 F9 : Color .
 	vars B1 B2 B3 B4 B5 B6 B7 B8 B9 : Color .
@@ -55,10 +63,49 @@ fmod RUBIK-OP is
 
 	op B : State -> State .
 	eq B(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) =
-		 s(left(U3 L2 L3 U2 L5 L6 U1 L8 L9) front(R3 R6 R9 F4 F5 F6 F7 F8 F9) right(R1 R2 D9 R4 R5 D8 R7 R8 D7) back(B7 B4 B1 B8 B5 B2 B9 B6 B3) up(R3 R6 R9 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 L1 L4 L7)) . 
+		 s(left(U3 L2 L3 U2 L5 L6 U1 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 D9 R4 R5 D8 R7 R8 D7) back(B7 B4 B1 B8 B5 B2 B9 B6 B3) up(R3 R6 R9 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 L1 L4 L7)) . 
 
 	op Bi : State -> State .
-	eq Bi(s(left(U3 L2 L3 U2 L5 L6 U1 L8 L9) front(R3 R6 R9 F4 F5 F6 F7 F8 F9) right(R1 R2 D9 R4 R5 D8 R7 R8 D7) back(B7 B4 B1 B8 B5 B2 B9 B6 B3) up(R3 R6 R9 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 L1 L4 L7))) =
+	eq Bi(s(left(U3 L2 L3 U2 L5 L6 U1 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 D9 R4 R5 D8 R7 R8 D7) back(B7 B4 B1 B8 B5 B2 B9 B6 B3) up(R3 R6 R9 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 L1 L4 L7))) =
+		  s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9)) . 
+
+	op L : State -> State .
+	eq L(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) =
+		 s(left(L7 L4 L1 L8 L5 L2 L9 L6 L3) front(U1 F2 F3 U4 F5 F6 U7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 D7 B4 B5 D4 B7 B8 D1) up(B9 U2 U3 B6 U5 U6 B3 U8 U9) down(F1 D2 D3 F4 D5 D6 F7 D8 D9)) . 
+
+	op Li : State -> State .
+	eq Li(s(left(L7 L4 L1 L8 L5 L2 L9 L6 L3) front(U1 F2 F3 U4 F5 F6 U7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 D7 B4 B5 D4 B7 B8 D1) up(B9 U2 U3 B6 U5 U6 B3 U8 U9) down(F1 D2 D3 F4 D5 D6 F7 D8 D9))) =
+		  s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9)) .
+
+	op D : State -> State .
+	eq D(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) =
+		 s(left(L1 L2 L3 L4 L5 L6 B7 B8 B9) front(F1 F2 F3 F4 F5 F6 L7 L8 L9) right(R1 R2 R3 R4 R5 R6 F7 F8 F9) back(B1 B2 B3 B4 B5 B6 R7 R8 R9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D7 D4 D1 D8 D5 D2 D9 D6 D3)) .
+
+	op Di : State -> State .
+	eq Di(s(left(L1 L2 L3 L4 L5 L6 B7 B8 B9) front(F1 F2 F3 F4 F5 F6 L7 L8 L9) right(R1 R2 R3 R4 R5 R6 F7 F8 F9) back(B1 B2 B3 B4 B5 B6 R7 R8 R9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D7 D4 D1 D8 D5 D2 D9 D6 D3))) = 
 		  s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9)) . 
 
 endfm
+
+mod RUBIK-ALG is
+	protecting RUBIK-OP .
+
+	--- vars F1 F2 F3 F4 F5 F6 : Face .
+	var S : State .
+	--- rl [mF] : s(F1 F2 F3 F4 F5 F6) => F(s(F1 F2 F3 F4 F5 F6)) .
+	rl [mF] :  S => F(S) .
+	rl [mFi] :  S => Fi(S) .
+	rl [mR] :  S => R(S) .
+	rl [mRi] :  S => Ri(S) .
+	rl [mU] :  S => U(S) .
+	rl [mUi] :  S => Ui(S) .
+	rl [mB] :  S => B(S) .
+	rl [mBi] :  S => Bi(S) .
+	rl [mL] :  S => L(S) .
+	rl [mLi] :  S => Li(S) .
+	rl [mD] :  S => D(S) .
+	rl [mDi] :  S => Di(S) .
+
+
+
+endm
