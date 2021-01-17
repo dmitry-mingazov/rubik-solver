@@ -1,0 +1,3 @@
+search in RUBIK-ALG : finalState =>* S:State such that isSolved(S:State) .
+red fmi(yawCW(fm(finalState))) .
+red yawCW(yawCW(yawCW(fmi(yawCW(fm(finalState)))))) .
