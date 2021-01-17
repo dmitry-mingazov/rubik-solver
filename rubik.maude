@@ -35,7 +35,8 @@ fmod RUBIK-OP is
 	op exState2 : -> State [ctor] . 
 	eq exState2 = s(left(G O G R R R R R R) front(Y B B G G G G G G) right(Y R Y O O O O O O) back(B G Y B B B B B B) up(O Y R Y Y Y R Y O) down(W W W W W W W W W)) .
 --- SeconLayer example state
-
+	op exState3 : -> State [ctor] .
+	eq exState3 = s(left(B R R R R R R R R) front(Y Y O G G G G G G) right(Y G G O O O O O O) back(Y Y O B B B B B B) up(Y O R Y Y Y B B G) down(W W W W W W W W W)) .
 
 	vars F1 F2 F3 F4 F5 F6 F7 F8 F9 : Color .
 	vars B1 B2 B3 B4 B5 B6 B7 B8 B9 : Color .
@@ -139,9 +140,13 @@ fmod RUBIK-OP is
 	ceq isOnlyYellowCrossState(S) = true if isYellowCrossState(S) and not(isOnlyYellowFaceState(S)) .
 	eq isOnlyYellowCrossState(S) = false [owise] .
 
-	--- op isSeconLayerState : State -> Bool .
-	--- eq isSeconLayerState(s(left(L1 L2 L3 L0 L0 L0 L0 L0 L0) front(F1 F2 F3 F0 F0 F0 F0 F0 F0) right(R1 R2 R3 R0 R0 R0 R0 R0 R0) back(B1 B2 B3 B0 B0 B0 B0 B0 B0) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D0 D0 D0 D0 D0 D0 D0 D0 D0))) = true .
-	--- eq isSeconLayerState(S) = false [owise] .
+	op isSecondLayerState : State -> Bool .
+	eq isSecondLayerState(s(left(L1 L2 L3 L0 L0 L0 L0 L0 L0) front(F1 F2 F3 F0 F0 F0 F0 F0 F0) right(R1 R2 R3 R0 R0 R0 R0 R0 R0) back(B1 B2 B3 B0 B0 B0 B0 B0 B0) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D0 D0 D0 D0 D0 D0 D0 D0 D0))) = true .
+	eq isSecondLayerState(S) = false [owise] .
+
+	op isOnlySecondLayerState : State -> Bool .
+	ceq isOnlySecondLayerState(S) = true if isSecondLayerState(S) and not(isOnlyYellowCrossState(S)) .
+	eq isOnlySecondLayerState(S) = false [owise] .
 
 	op isSolved : State -> Bool .
 	--- eq isSolved(s(left(R R R R R R R R R) front(G G G G G G G G G) right(O O O O O O O O O) back(B B B B B B B B B) up(Y Y Y Y Y Y Y Y Y) down(W W W W W W W W W))) = true .
@@ -160,6 +165,11 @@ fmod RUBIK-OP is
 	op yFacei : State -> State .
 	eq yFacei(S) = Li(Li(Bi(Bi(L(F(Li(Bi(Bi((L(Fi(L(S))))))))))))) .
 
+	op sLayer : State -> State .
+	eq sLayer(S) = R(F(U(Fi(Ui(Ri(S)))))) .
+
+	op sLayeri : State -> State .
+	eq sLayeri(S) = Li(Fi(Ui(F(U(L(S)))))) .
 
 endfm
 
@@ -195,6 +205,10 @@ mod RUBIK-ALG is
 	crl [rotateYellowCross] : S => yawCW(S) if isOnlyYellowCrossState(S) .
 	crl [yellowCross] : S => yCross(S) if isOnlyYellowCrossState(S) .
 	crl [yellowCrossInverse] : S => yCrossi(S) if isOnlyYellowCrossState(S) .
+
+	crl [rotateSecondLayer] : S => yawCW(S) if isOnlySecondLayerState(S) .
+	crl [secondLayer] : S => sLayer(S) if isOnlySecondLayerState(S) .
+	crl [secondLayerInverse] : S => sLayeri(S) if isOnlySecondLayerState(S) .
 
 
 endm
