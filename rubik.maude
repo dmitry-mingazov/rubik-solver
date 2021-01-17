@@ -34,9 +34,15 @@ fmod RUBIK-OP is
 --- YellowCross example state
 	op exState2 : -> State [ctor] . 
 	eq exState2 = s(left(G O G R R R R R R) front(Y B B G G G G G G) right(Y R Y O O O O O O) back(B G Y B B B B B B) up(O Y R Y Y Y R Y O) down(W W W W W W W W W)) .
---- SeconLayer example state
+--- SecondLayer example state
 	op exState3 : -> State [ctor] .
 	eq exState3 = s(left(B R R R R R R R R) front(Y Y O G G G G G G) right(Y G G O O O O O O) back(Y Y O B B B B B B) up(Y O R Y Y Y B B G) down(W W W W W W W W W)) .
+--- FirstLayer example state
+	op exState4 : -> State [ctor] .
+	eq exState4 = s(left(B G G O R Y R R R) front(Y B R B G B G G G) right(Y Y O R O O O O O) back(Y R O G B Y B B B) up(Y Y G R Y G R O B) down(W W W W W W W W W)) .
+--- FirstLayer example state 2
+	op exState5 : -> State [ctor] .
+	eq exState5 = s(left(R G O O R O R R R) front(B Y O B G Y G G G) right(Y Y Y O O G O O O) back(R B B R B G B B B) up(Y R G Y Y B Y R G) down(W W W W W W W W W)) .
 
 	vars F1 F2 F3 F4 F5 F6 F7 F8 F9 : Color .
 	vars B1 B2 B3 B4 B5 B6 B7 B8 B9 : Color .
@@ -148,6 +154,39 @@ fmod RUBIK-OP is
 	ceq isOnlySecondLayerState(S) = true if isSecondLayerState(S) and not(isOnlyYellowCrossState(S)) .
 	eq isOnlySecondLayerState(S) = false [owise] .
 
+	op isFirstLayerState : State -> Bool .
+	eq isFirstLayerState(s(left(L1 L2 L3 L4 L0 L6 L0 L0 L0) front(F1 F2 F3 F4 F0 F6 F0 F0 F0) right(R1 R2 R3 R4 R0 R6 R0 R0 R0) back(B1 B2 B3 B4 B0 B6 B0 B0 B0) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D0 D0 D0 D0 D0 D0 D0 D0 D0))) = true .
+	eq isFirstLayerState(S) = false [owise] .
+
+	op isOnlyFirstLayerState : State -> Bool .
+	ceq isOnlyFirstLayerState(S) = true if isFirstLayerState(S) and not(isOnlySecondLayerState(S)) .
+	eq isOnlySecondLayerState(S) = false [owise] .
+
+	op isFrontResolvable : State -> Bool .
+	ceq isFrontResolvable(s(left(L1 L2 L3 L4 L0 L6 L0 L0 L0) front(F1 F2 F3 F4 F0 F6 F0 F0 F0) right(R1 R2 R3 R4 R0 R6 R0 R0 R0) back(B1 B2 B3 B4 B0 B6 B0 B0 B0) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D0 D0 D0 D0 D0 D0 D0 D0 D0))) = true if (R2 == F0 and (U6 == R0 or U6 == L0)) or (B2 == F0 and (U2 == R0 or U2 == L0)) or (L2 == F0 and (U4 == R0 or U4 == L0)) .
+	eq isFrontResolvable(S) = false [owise] .
+
+	op isFrontRightResolvable : State -> Bool .
+	ceq isFrontRightResolvable(s(left(L1 L2 L3 L4 L0 L6 L0 L0 L0) front(F1 F2 F3 F4 F0 F6 F0 F0 F0) right(R1 R2 R3 R4 R0 R6 R0 R0 R0) back(B1 B2 B3 B4 B0 B6 B0 B0 B0) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D0 D0 D0 D0 D0 D0 D0 D0 D0))) = true if F2 == F0 and U8 == R0 .
+	eq isFrontRightResolvable(S) = false [owise] .
+
+	op isFrontLeftResolvable : State -> Bool .
+	ceq isFrontLeftResolvable(s(left(L1 L2 L3 L4 L0 L6 L0 L0 L0) front(F1 F2 F3 F4 F0 F6 F0 F0 F0) right(R1 R2 R3 R4 R0 R6 R0 R0 R0) back(B1 B2 B3 B4 B0 B6 B0 B0 B0) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D0 D0 D0 D0 D0 D0 D0 D0 D0))) = true if F2 == F0 and U8 == L0 .
+	eq isFrontLeftResolvable(S) = false [owise] .
+
+	op isFrontSolved : State -> Bool .
+	eq isFrontSolved(s(left(L1 L2 L3 L4 L0 L0 L0 L0 L0) front(F1 F2 F3 F0 F0 F0 F0 F0 F0) right(R1 R2 R3 R0 R0 R6 R0 R0 R0) back(B1 B2 B3 B4 B0 B6 B0 B0 B0) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D0 D0 D0 D0 D0 D0 D0 D0 D0))) = true .
+	eq isFrontSolved(S) = false [owise] .
+
+	op isOnlyFrontSolved : State -> Bool .
+	ceq isOnlyFrontSolved(S) = true if isFrontSolved(S) and isOnlyFirstLayerState(S) .
+	eq isOnlyFrontSolved(S) = false [owise] .
+
+	op isOnlyFrontResolvable : State -> Bool .
+	ceq isOnlyFrontResolvable(S) = true if isFrontResolvable(S) and isOnlyFirstLayerState(S) .
+	eq isOnlyFrontResolvable(S) = false [owise] .
+
+
 	op isSolved : State -> Bool .
 	--- eq isSolved(s(left(R R R R R R R R R) front(G G G G G G G G G) right(O O O O O O O O O) back(B B B B B B B B B) up(Y Y Y Y Y Y Y Y Y) down(W W W W W W W W W))) = true .
 	eq isSolved(s(left(L0 L0 L0 L0 L0 L0 L0 L0 L0) front(F0 F0 F0 F0 F0 F0 F0 F0 F0) right(R0 R0 R0 R0 R0 R0 R0 R0 R0) back(B0 B0 B0 B0 B0 B0 B0 B0 B0) up(U0 U0 U0 U0 U0 U0 U0 U0 U0) down(D0 D0 D0 D0 D0 D0 D0 D0 D0))) = true .
@@ -170,6 +209,12 @@ fmod RUBIK-OP is
 
 	op sLayeri : State -> State .
 	eq sLayeri(S) = Li(Fi(Ui(F(U(L(S)))))) .
+
+	op fLayer : State -> State .
+	eq fLayeri(S) = F(U(Fi(Ui(Ri(Ui(R(U(S)))))))) .
+
+	op fLayeri : State -> State .
+	eq fLayeri(S) = Fi(Ui(F(U(L(U(Li(Ui(S)))))))) .
 
 endfm
 
@@ -210,5 +255,9 @@ mod RUBIK-ALG is
 	crl [secondLayer] : S => sLayer(S) if isOnlySecondLayerState(S) .
 	crl [secondLayerInverse] : S => sLayeri(S) if isOnlySecondLayerState(S) .
 
+	crl [toFrontResolvable] : S => U(S) if isOnlyFrontResolvable(S) .
+	crl [firstLayer] : S => fLayer(S) if isFrontRightResolvable(S) .
+	crl [firstLayerInverse] : S => fLayeri(S) if isFrontLeftResolvable(S) .
+	crl [rotateFirstLayer] : S => yawCW(S) if not(isOnlyFrontResolvable(S)) or isOnlyFrontSolved(S) .
 
 endm
