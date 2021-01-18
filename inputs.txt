@@ -1,3 +1,7 @@
 search in RUBIK-ALG : finalState =>* S:State such that isSolved(S:State) .
+search[1] in RUBIK-ALG : exState4 =>* S:State such that isSolved(S:State) .
+search[1] in RUBIK-ALG : exState5 =>* S:State such that isSecondLayerState(S:State) .
 red fmi(yawCW(fm(finalState))) .
 red yawCW(yawCW(yawCW(fmi(yawCW(fm(finalState)))))) .
+
+front 
