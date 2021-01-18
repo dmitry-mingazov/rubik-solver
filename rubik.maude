@@ -22,8 +22,11 @@ fmod RUBIK-OP is
 	op solvedState : -> State [ctor] .
 	eq solvedState = s(left(R R R R R R R R R) front(G G G G G G G G G) right(O O O O O O O O O) back(B B B B B B B B B) up(Y Y Y Y Y Y Y Y Y) down(W W W W W W W W W)) .
 
+	--- op scrambleState : -> State [ctor] .
+	--- eq scrambleState = s(left(G W G Y O O G G W) front(O Y B G Y W O O R) right(R R W R R R Y G Y) back(R B O Y W O B G R) up(W W B O G B Y B Y) down(B B G Y B W W R O)) .
+
 	op scrambleState : -> State [ctor] .
-	eq scrambleState = s(left(G W G Y O O G G W) front(O Y B G Y W O O R) right(R R W R R R Y G Y) back(R B O Y W O B G R) up(W W B O G B Y B Y) down(B B G Y B W W R O)) .
+	eq scrambleState = s(left(B B R B O G G W Y) front(W R Y R G Y O O R) right(B Y B G R W Y Y O) back(Y R R O B W W G O) up(W B O O W O G W R) down(B G G R Y B Y W G)) .
 
 	op finalState : -> State [ctor] . 
 	eq finalState = s(left(R O R R R R R R R) front(G R G G G G G G G) right(O G O O O O O O O) back(B B B B B B B B B) up(Y Y Y Y Y Y Y Y Y) down(W W W W W W W W W)) .
@@ -216,9 +219,41 @@ fmod RUBIK-OP is
 	ceq isWhiteCrossPartialState(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) = true if U2 == U5 or U4 == U5 or U6 == U5 or U8 == U5 .
 	eq isWhiteCrossPartialState(S) = false [owise] .
 
+	op isWhiteCrossPartialAlignedState : State -> Bool .
+	ceq isWhiteCrossPartialAlignedState(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) = true if (U8 == U5 and F2 == F5) or (U6 == U5 and R2 == R5) or (U2 == U5 and B2 == B5) or (U4 == U5 and L2 == L5) .
+	eq isWhiteCrossPartialAlignedState(S) = false [owise] .
+
 	op isWhiteCrossState : State -> Bool .
 	eq isWhiteCrossState(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U0 U3 U0 U0 U0 U7 U0 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) = true .
 	eq isWhiteCrossState(S) = false [owise] .
+
+	op hasUpperWhiteEdge : State -> Bool .
+	eq hasUpperWhiteEdge(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U0 U6 U7 U0 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) = true .
+	eq hasUpperWhiteEdge(S) = false [owise] .
+
+	op hasWhiteEdgeInLeft : State -> Bool .
+	eq hasWhiteEdgeInLeft(s(left(L1 L2 L3 L4 L5 U5 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) = true .
+	eq hasWhiteEdgeInLeft(S) = false [owise] .
+
+	op hasWhiteEdgeInRight : State -> Bool .
+	eq hasWhiteEdgeInRight(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 U5 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) = true .
+	eq hasWhiteEdgeInRight(S) = false [owise] .
+
+	op hasWhiteEdgeInDown : State -> Bool .
+	eq hasWhiteEdgeInDown(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 U5 D3 D4 D5 D6 D7 D8 D9))) = true .
+	eq hasWhiteEdgeInDown(S) = false [owise] .
+
+	op hasWhiteEdgeInFrontUp : State -> Bool .
+	eq hasWhiteEdgeInFrontUp(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 U5 F3 F4 F5 F6 F7 F8 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) = true .
+	eq hasWhiteEdgeInFrontUp(S) = false [owise] .
+	
+	op hasWhiteEdgeInFrontBottom : State -> Bool .
+	eq hasWhiteEdgeInFrontBottom(s(left(L1 L2 L3 L4 L5 L6 L7 L8 L9) front(F1 F2 F3 F4 F5 F6 F7 U5 F9) right(R1 R2 R3 R4 R5 R6 R7 R8 R9) back(B1 B2 B3 B4 B5 B6 B7 B8 B9) up(U1 U2 U3 U4 U5 U6 U7 U8 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) = true .
+	eq hasWhiteEdgeInFrontBottom(S) = false [owise] .
+
+	op hasFrontWhiteEdge : State -> Bool .
+	ceq hasFrontWhiteEdge(S) = true if hasWhiteEdgeInLeft(S) or hasWhiteEdgeInRight(S) or hasWhiteEdgeInDown(S) or hasWhiteEdgeInFrontUp(S) or hasWhiteEdgeInFrontBottom(S) .
+	eq hasFrontWhiteEdge(S) = false [owise] .
 
 	--- check if the cross is aligned
 
@@ -312,7 +347,15 @@ fmod RUBIK-OP is
 
 	op wCrossD : State -> State .
 	eq wCrossD(S) = F(Li(D(D(L(F(S)))))) .
+
+	--- op wDotL : State -> State .
+	--- eq wDotL(S) = F(S) .
+
+	--- op wDotR : State -> State .
+	--- eq wDotR(S) = Fi(S) .
 	
+	op wDotB : State -> State .
+	eq wDotB(S) = U(R(Ui(Fi(S)))) .
 
 endfm
 
@@ -361,16 +404,24 @@ mod RUBIK-ALG is
 	--- crl [rotateFirstLayer] : S => yawCW(S) if (not(isOnlyFrontResolvable(S)) or isOnlyFrontSolved(S)) .
 	crl [rotateFirstLayer] : S => yawCW(S) if mustRotate(S) .
 
+	crl [rollTheCube] : S => roll(roll(S)) if isOnlyWhiteFaceState(S) .
+
 	crl [toUpperRightCornerResolvable] : S => D(S) if isUpperRightWhiteCornerReallyResolvable(S) .
-	crl [rotateWhiteFace-solved] : S => yawCW(S) if isUpperRightCornerSolved(S) and isOnlyWhiteCrossState(S) .
-	crl [rotateWhiteFace-unresolvable] : S => yawCW(S) if (not(isUpperRightWhiteCornerReallyResolvable(S)) and not(isUpperRightCornerSolved(S))) and isOnlyWhiteCrossState(S) and not(isUpperRightCornerWrongWhite(S)) .
+	crl [rotateWhiteCross-solved] : S => yawCW(S) if isUpperRightCornerSolved(S) and isOnlyWhiteCrossState(S) .
+	crl [rotateWhiteCross-unresolvable] : S => yawCW(S) if (not(isUpperRightWhiteCornerReallyResolvable(S)) and not(isUpperRightCornerSolved(S))) and isOnlyWhiteCrossState(S) and not(isUpperRightCornerWrongWhite(S)) .
 	crl [shiftDown] : S => D(S) if (not(isUpperRightWhiteCornerReallyResolvable(S))) and isUpperRightCornerWrongWhite(S) and isLowerRightCornerWrongWhite(S) .
 	crl [upperRightCornerWrong] : S => wCrossF(S) if isUpperRightCornerWrongWhite(S) and not(isLowerRightCornerWrongWhite(S)) .
 	crl [lowerRightCornerFront] : S => wCrossF(S) if isLowerRightWhiteCornerFront(S) .
 	crl [lowerRightCornerRight] : S => wCrossR(S) if isLowerRightWhiteCornerRight(S) .
 	crl [lowerRightCornerDown] : S => wCrossD(S) if isLowerRightWhiteCornerDown(S) .
 
-	crl [rollTheCube] : S => roll(roll(S)) if isOnlyWhiteFaceState(S) .
+	crl [toUpperEdgeResolvable] : S => U(S) if hasFrontWhiteEdge(S) and hasUpperWhiteEdge(S) .
+	crl [rotateWhiteDot] : S => yawCW(S) if not(hasFrontWhiteEdge(S)) and not(isWhiteCrossState(S)) and not(isFirstLayerState(S)) . 
+	crl [whiteDotLeft] : S => F(S) if hasWhiteEdgeInLeft(S) and not(hasUpperWhiteEdge(S)) .
+	crl [whiteDotRight] : S => Fi(S) if hasWhiteEdgeInRight(S) and not(hasUpperWhiteEdge(S)) .
+	crl [whiteDotBottom] : S => wDotB(S) if hasWhiteEdgeInFrontBottom(S) and not(hasUpperWhiteEdge(S)) .
+	--- whiteDotUp has one more condition to avoid possible loop with whiteDotBottom
+	crl [whiteDotUp] : S => F(F(S)) if hasWhiteEdgeInFrontUp(S) and not(hasUpperWhiteEdge(S)) and not(hasWhiteEdgeInFrontBottom(S)) .
 
 
 
