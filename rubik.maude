@@ -47,6 +47,7 @@ fmod RUBIK-OP is
 	op exFrontRightSolvable : -> State [ctor] .
 	eq exFrontRightSolvable = s(left(G R R B R R R R R) front(Y G Y G G Y G G G) right(O Y G O O G O O O) back(Y B Y Y B O B B B) up(O R R Y Y B B O B) down(W W W W W W W W W)) .
 
+
 	vars F1 F2 F3 F4 F5 F6 F7 F8 F9 : Color .
 	vars B1 B2 B3 B4 B5 B6 B7 B8 B9 : Color .
 	vars L1 L2 L3 L4 L5 L6 L7 L8 L9 : Color .
@@ -200,6 +201,10 @@ fmod RUBIK-OP is
 	op mustRotate : State -> Bool .
 	ceq mustRotate(S) = true if not(isFrontLeftMissplaced(S)) and not(isFrontRightMissplaced(S)) and not(isFrontRightResolvable(S)) and not(isFrontLeftResolvable(S)) and not(isOnlyFrontResolvable(S)) and isFirstLayerState(S) .
 
+	op isWhiteCross : State -> Bool .
+	eq isWhiteCross(s(left(L1 L2 L3 L4 L2 L6 L7 L8 L9) front(F1 F2 F3 F4 F2 F6 F7 F8 F9) right(R1 R2 R3 R4 R2 R6 R7 R8 R9) back(B1 B2 B3 B4 B2 B6 B7 B8 B9) up(U1 U2 U3 U2 U2 U2 U7 U2 U9) down(D1 D2 D3 D4 D5 D6 D7 D8 D9))) = true .
+	eq isWhiteCross(S) = false [owise] .
+
 
 	op isSolved : State -> Bool .
 	--- eq isSolved(s(left(R R R R R R R R R) front(G G G G G G G G G) right(O O O O O O O O O) back(B B B B B B B B B) up(Y Y Y Y Y Y Y Y Y) down(W W W W W W W W W))) = true .
@@ -229,6 +234,8 @@ fmod RUBIK-OP is
 
 	op fLayeri : State -> State .
 	eq fLayeri(S) = Fi(Ui(F(U(L(U(Li(Ui(S)))))))) .
+
+	
 
 endfm
 
