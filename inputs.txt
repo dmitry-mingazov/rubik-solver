@@ -4,4 +4,8 @@ search[1] in RUBIK-ALG : exState5 =>* S:State such that isSecondLayerState(S:Sta
 red fmi(yawCW(fm(finalState))) .
 red yawCW(yawCW(yawCW(fmi(yawCW(fm(finalState)))))) .
 
-front 
+
+--- complete cube ---
+search [1] in RUBIK-WC : scrambleState =>* S such that isWhiteCrossState(S) .
+search [1] in RUBIK-ALG : ---output of above line--- =>* S such that isWhiteFaceState(S) .
+search [1] in RUBIK-ALG : ---output of above line--- =>* S such that isSolved(S) .
